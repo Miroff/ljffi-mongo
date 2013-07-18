@@ -464,7 +464,8 @@ end
 -- Utillity methods
 --------------------------------------------------------------------------------
 
-local is_connected, set_write_concern, check_result_, check_result_failsafe_
+local is_connected, disconnect, set_write_concern, check_result_, 
+    check_result_failsafe_
 
 do
   is_connected = function(self)
@@ -473,6 +474,16 @@ do
     )
     
     return mongoc.mongo_check_connection(self.con_) == ffi.C.MONGO_OK
+  end
+
+  disconnect = function(self)
+    method_arguments(
+      self
+    )
+    
+    mongoc.mongo_disconnect(self.con_)
+
+    return true
   end
 
   set_write_concern = function(self, wc)
@@ -525,6 +536,7 @@ do
     return 
     {
       is_connected = is_connected;
+      disconnect = disconnect;
       run_command = run_command;
       insert = insert;
       insert_batch = insert_batch;
