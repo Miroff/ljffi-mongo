@@ -189,3 +189,17 @@ test:case "set-global-write-concern" (function()
 
   local id = con:insert("ljffi-mongo.find_one", { foo = 'bar' }, mongo.create_write_concern({ w = -1, fsync = true }))
 end)
+
+--------------------------------------------------------------------------------
+test:group "disconnect"
+test:case "check-disconnect" (function() 
+  local con = mongo.connect()
+
+  ensure("Connection should be established", con:is_connected())
+
+  con:disconnect()
+
+  local id, msg = con:insert("ljffi-mongo.disconnect", { })
+
+  ensure("Connection should be lost", id == nil and msg == "Connection failed")
+end)
